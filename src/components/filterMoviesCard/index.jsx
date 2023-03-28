@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -45,8 +45,8 @@ export default function FilterMoviesCard(props) {
 
   const handleChange = (e, type, value) => {
     e.preventDefault()
-    // Completed later
-  };
+    props.onUserInput(type, value)   // NEW
+  }
 
   const handleTextChange = e => {
     handleChange(e, "title", e.target.value)
@@ -94,7 +94,7 @@ export default function FilterMoviesCard(props) {
             })}
           </Select>
           
-          <InputLabel id="country-label">Country</InputLabel>
+          {/* <InputLabel id="country-label">Country</InputLabel>
           <Select
             labelId="country-label"
             id="country-select"
@@ -108,7 +108,7 @@ export default function FilterMoviesCard(props) {
                 </MenuItem>
               );
             })}
-          </Select>
+          </Select> */}
         </FormControl>
       </CardContent>
     </Card>
