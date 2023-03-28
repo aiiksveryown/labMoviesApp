@@ -31,6 +31,12 @@ export default function FilterMoviesCard(props) {
     {id: 3, name: "Thriller"}
   ]
 
+  const countries = [
+    { id: 1, name: "France" },
+    { id: 2, name: "United States of America" },
+    { id: 3, name: "Lithuania" },
+  ];
+
   return (
     <>
     <Card sx={styles.root} variant="outlined">
@@ -56,6 +62,20 @@ export default function FilterMoviesCard(props) {
               return (
                 <MenuItem key={genre.id} value={genre.id}>
                   {genre.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          
+          <InputLabel id="country-label">Country</InputLabel>
+          <Select
+            labelId="country-label"
+            id="country-select"
+            >
+            {countries.map((country) => {
+              return (
+                <MenuItem key={country.id} value={country.id}>
+                  {country.name}
                 </MenuItem>
               );
             })}
