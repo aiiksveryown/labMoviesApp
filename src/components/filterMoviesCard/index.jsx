@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SortIcon from '@mui/icons-material/Sort';
-
+import { getGenres } from "../../api/tmdb-api";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
@@ -28,20 +28,11 @@ export default function FilterMoviesCard(props) {
   const [genres, setGenres] = useState([{ id: '0', name: "All" }])
 
   useEffect(() => {
-    fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
-        import.meta.env.VITE_TMDB_KEY
-    )
-      .then(res => res.json())
-      .then(json => {
-        // console.log(json.genres) 
-        return json.genres
-      })
-      .then(apiGenres => {
-        setGenres([genres[0], ...apiGenres]);
-      });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getGenres().then((allGenres) => {
+      setGenres([genres[0], ...allGenres]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleChange = (e, type, value) => {
     e.preventDefault()
