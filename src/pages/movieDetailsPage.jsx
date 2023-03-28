@@ -33,8 +33,6 @@ const MoviePage = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(images);
-
   return (
     <>
       {movie ? (
