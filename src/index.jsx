@@ -1,23 +1,17 @@
 import React from "react";
-import { BrowserRouter, Route, Navigate, Routes, Link } from "react-router-dom";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 
+import SiteHeader from './components/siteHeader'
 import MovieReviewPage from "./pages/movieReviewPage";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
-import FavouriteMoviesPage from "./pages/favouriteMoviesPage"; // NEW
+import FavouriteMoviesPage from "./pages/favouriteMoviesPage";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/movies/favourites">Favourites</Link>
-        </li>
-      </ul>
+      <SiteHeader />      {/* New Header  */}
       <Routes>
         <Route path="/movies/favourites" element={<FavouriteMoviesPage />} />
         <Route path="/movies/:id" element={<MoviePage />} />
@@ -26,8 +20,8 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
-  );
-};
-
-const rootElement = createRoot(document.getElementById("root"));
-rootElement.render(<App />);
+    );
+  };
+  
+  const rootElement = createRoot(document.getElementById("root"));
+  rootElement.render(<App />);
