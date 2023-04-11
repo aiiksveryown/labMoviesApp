@@ -1,6 +1,8 @@
 import React from "react";
-import PageTemplate from "../components/templateMovieListPage";
 import { useQuery } from "react-query";
+
+import AddToFavouritesIcon from '../components/cardIcons/addToFavourites'
+import PageTemplate from "../components/templateMovieListPage";
 import Spinner from "../components/spinner";
 import { getMovies } from "../api/tmdb-api";
 import useFiltering from "../hooks/useFiltering";
@@ -47,18 +49,16 @@ const HomePage = (props) => {
   const movies = data ? data.results : [];
   const displayedMovies = filterFunction(movies);
 
-  // Redundant, but necessary to avoid app crashing.
-  const favourites = movies.filter((m) => m.favorite);
-  localStorage.setItem("favourites", JSON.stringify(favourites));
-  const addToFavourites = (movieId) => true;
-
   return (
-    <>
+     <>
       <PageTemplate
         title="Discover Movies"
         movies={displayedMovies}
-        selectFavourite={addToFavourites}
+        action={(movie) => {
+          return <AddToFavouritesIcon movie={movie} />
+        }}
       />
+
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues[0].value}
