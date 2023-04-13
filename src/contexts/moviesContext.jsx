@@ -24,11 +24,9 @@ const MoviesContextProvider = (props) => {
   };
 
   const addToPlaylist = (movie) => {
-    let updatedPlaylist = [...playlist];
     if (!playlist.includes(movie.id)) {
-      updatedPlaylist.push(movie.id);
+      setPlaylist([...playlist, movie.id]);
     }
-    setPlaylist(updatedPlaylist);
   };
 
   const removeFromPlaylist = (movie) => {
@@ -39,6 +37,7 @@ const MoviesContextProvider = (props) => {
     <MoviesContext.Provider
       value={{
         favourites,
+        playlist,
         addToFavourites,
         removeFromFavourites,
         addReview,

@@ -8,6 +8,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
@@ -25,24 +26,29 @@ const styles = {
 };
 
 export default function MovieCard({ movie, action }) {
-  const { favourites, addToFavourites } = useContext(MoviesContext);
+  const { favourites, playlist } = useContext(MoviesContext);
 
-  if (favourites.find((id) => id === movie.id)) {
-    movie.favourite = true;
-  } else {
-    movie.favourite = false
-  }
+  const isFavourite = favourites.find((id) => id === movie.id);
+
+  const isInPlaylist = playlist.find((id) => id === movie.id);
 
   return (
     <Card sx={styles.card}>
       <CardHeader
         sx={styles.header}
         avatar={
-          movie.favourite ? (
-            <Avatar sx={styles.avatar}>
-              <FavoriteIcon />
-            </Avatar>
-          ) : null
+          <>
+            {isFavourite && (
+              <Avatar sx={styles.avatar}>
+                <FavoriteIcon />
+              </Avatar>
+            )}
+            {isInPlaylist && (
+              <Avatar sx={styles.avatar}>
+                <PlaylistAddCheckIcon color="secondary" />
+              </Avatar>
+            )}
+          </>
         }
         title={
           <Typography variant="h5" component="p">

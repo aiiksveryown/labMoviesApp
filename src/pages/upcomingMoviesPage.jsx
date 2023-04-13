@@ -24,7 +24,7 @@ const genreFiltering = {
 };
 
 const UpcomingMoviesPage = (props) => {
-  const { data, error, isLoading, isError } = useQuery("upcoming", getUpcomingMovies); // Already implemented
+  const { data, error, isLoading, isError } = useQuery("upcoming", getUpcomingMovies);
   const { filterValues, setFilterValues, filterFunction } = useFiltering(
     [],
     [titleFiltering, genreFiltering]
