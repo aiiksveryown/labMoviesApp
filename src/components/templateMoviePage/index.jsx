@@ -1,27 +1,15 @@
 import React from "react";
-import { useQuery } from "react-query"; 
+import { useQuery } from "react-query";
 import Grid from "@mui/material/Grid";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
+import Carousel from "react-material-ui-carousel";
+import Box from "@mui/material/Box";
 
-import Spinner from '../spinner'
+import Spinner from "../spinner";
 import MovieHeader from "../headerMovie";
 import { getMovieImages } from "../../api/tmdb-api";
 
-const styles = {
-  gridListRoot: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-  },
-  gridList: {
-    width: 450,
-    height: '100vh',
-  },
-};
-
 const TemplateMoviePage = ({ movie, children }) => {
-  const { data , error, isLoading, isError } = useQuery(
+  const { data, error, isLoading, isError } = useQuery(
     ["images", { id: movie.id }],
     getMovieImages
   );
@@ -33,7 +21,7 @@ const TemplateMoviePage = ({ movie, children }) => {
   if (isError) {
     return <h1>{error.message}</h1>;
   }
-  const images = data.posters 
+  const images = data.posters;
 
   return (
     <>
@@ -41,22 +29,24 @@ const TemplateMoviePage = ({ movie, children }) => {
 
       <Grid container spacing={5} style={{ padding: "15px" }}>
         <Grid item xs={3}>
-          <div sx={styles.gridListRoot}>
-            <ImageList cols={1}>
-              {images.map((image) => (
-                <ImageListItem
-                  key={image.file_path}
-                  sx={styles.gridListTile}
-                  cols={1}
-                >
+          <Box sx={{ width: "100%" }}>
+            {images && images.length > 0 && (
+              <Carousel
+                autoPlay={false}
+                animation="slide"
+                navButtonsAlwaysVisible={true}
+              >
+                {images.map((image, index) => (
                   <img
+                    key={index}
                     src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
                     alt={image.poster_path}
+                    style={{ width: "100%" }}
                   />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          </div>
+                ))}
+              </Carousel>
+            )}
+          </Box>
         </Grid>
 
         <Grid item xs={9}>
