@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { supabase } from "../../supabaseClient";
 
 const styles = {
   title: {
@@ -46,6 +47,17 @@ const SiteHeader = () => {
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  const userSession = supabase.auth.getUser().then((user) => {
+    return user.data.user;
+  });
+
+  console.log(userSession);
 
   return (
     <>
@@ -92,6 +104,13 @@ const SiteHeader = () => {
                     {opt.label}
                   </MenuItem>
                 ))}
+                {userSession ? (
+                  <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => navigate("/signin")}>
+                    Sign In
+                  </MenuItem>
+                )}
               </Menu>
             </>
           ) : (
@@ -105,13 +124,20 @@ const SiteHeader = () => {
                   {opt.label}
                 </Button>
               ))}
+              {userSession ? (
+                <Button color="inherit" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              ) : (
+                <Button color="inherit" onClick={() => navigate("/signin")}>
+                  Sign In
+                </Button>
+              )}
             </>
           )}
         </Toolbar>
       </AppBar>
       <Offset />
-
-      {/* <div className={classes.offset} /> */}
     </>
   );
 };
