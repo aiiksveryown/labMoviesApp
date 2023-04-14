@@ -27,7 +27,7 @@ export const genreFiltering = {
 };
 
 const FavouriteMoviesPage = () => {
-  const { favourites: movieIds } = useContext(MoviesContext);
+  const { favourites } = useContext(MoviesContext);
   const { filterValues, setFilterValues, filterFunction } = useFiltering(
     [],
     [titleFiltering, genreFiltering]
@@ -35,9 +35,9 @@ const FavouriteMoviesPage = () => {
 
   // Create an array of queries and run them in parallel.
   const favouriteMovieQueries = useQueries(
-    movieIds.map((movieId) => {
+    favourites.map((f) => {
       return {
-        queryKey: ["movie", { id: movieId }],
+        queryKey: ["movie", { id: f.movie_id }],
         queryFn: getMovie,
       };
     })
