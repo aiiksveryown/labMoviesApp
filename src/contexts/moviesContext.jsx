@@ -1,64 +1,55 @@
 import React, { useState, createContext, useContext } from "react";
 import { useQuery } from "react-query";
-import { supabase } from "../supabaseClient"; // Import your Supabase client
 import { AuthContext } from "./authContext";
+import {
+  fetchFavourites,
+  addToFavouriteMovies,
+  removeFromFavouriteMovies,
+  fetchPlaylist,
+  addToMoviePlaylist,
+  removeFromMoviePlaylist,
+} from "../db/supabase";
 
 export const MoviesContext = createContext(null);
 
-async function fetchFavourites(userId) {
-  const { data, error } = await supabase
-    .from("favourites")
-    .select("*")
-    .eq("user_id", userId);
-  
-  console.log(userId);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
+function useFavourites(userId) {
+  return useQuery(["favourites", userId], () => fetchFavourites(userId), {
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
+  });
 }
 
-function useFavourites(userId) {
-  return useQuery(
-    ["favourites", userId],
-    () => fetchFavourites(userId),
-    {
-      enabled: !!userId, // Only fetch favourites when userId is available
-      staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
-    }
-  );
+function usePlaylist(userId) {
+  return useQuery(["playlist", userId], () => fetchPlaylist(userId), {
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
+  });
 }
 
 const MoviesContextProvider = (props) => {
   const [myReviews, setMyReviews] = useState({});
-  const [playlist, setPlaylist] = useState([]);
   const { user } = useContext(AuthContext);
 
-  const { data: favourites, refetch: refetchFavourites } = useFavourites(user?.id);
+  const { data: favourites, refetch: refetchFavourites } = useFavourites(
+    user?.id
+  );
+  const { data: playlist, refetch: refetchPlaylist } = usePlaylist(user?.id);
 
   const addToFavourites = async (movie) => {
     if (favourites.find((m) => m.movie_id === movie.id)) {
       return;
     }
-    
-    const { error } = await supabase
-      .from("favourites")
-      .insert([{ user_id: user?.id, movie_id: movie.id }]);
+
+    const error = await addToFavouriteMovies(user?.id, movie.id);
 
     if (!error) {
       refetchFavourites();
     }
   };
-  
+
   const removeFromFavourites = async (movie) => {
-    const { error } = await supabase
-    .from("favourites")
-    .delete()
-    .eq("user_id", user?.id)
-    .eq("movie_id", movie.id);
-    
+    const error = await removeFromFavouriteMovies(user?.id, movie.id);
+
     if (!error) {
       refetchFavourites();
     }
@@ -68,21 +59,31 @@ const MoviesContextProvider = (props) => {
     setMyReviews({ ...myReviews, [movie.id]: review });
   };
 
-  const addToPlaylist = (movie) => {
-    if (!playlist.includes(movie.id)) {
-      setPlaylist([...playlist, movie.id]);
+  const addToPlaylist = async (movie) => {
+    if (playlist.find((m) => m.movie_id === movie.id)) {
+      return;
+    }
+
+    const error = await addToMoviePlaylist(user?.id, movie.id);
+
+    if (!error) {
+      refetchPlaylist();
     }
   };
 
-  const removeFromPlaylist = (movie) => {
-    setPlaylist(playlist.filter((mId) => mId !== movie.id));
+  const removeFromPlaylist = async (movie) => {
+    const error = await removeFromMoviePlaylist(user?.id, movie.id);
+
+    if (!error) {
+      refetchPlaylist();
+    }
   };
 
   return (
     <MoviesContext.Provider
       value={{
         favourites: favourites || [],
-        playlist,
+        playlist: playlist || [],
         addToFavourites,
         removeFromFavourites,
         addReview,

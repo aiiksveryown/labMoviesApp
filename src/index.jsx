@@ -13,6 +13,7 @@ import MovieReviewPage from "./pages/movieReviewPage";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavouriteMoviesPage from "./pages/favouriteMoviesPage";
+import PlaylistMoviesPage from "./pages/playlistMoviesPage";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/*" element={<ProtectedRoutes />}>
                 <Route path="reviews/form" element={<AddMovieReviewPage/>} />
                 <Route path="movies/favourites" element={<FavouriteMoviesPage />} />
+                <Route path="movies/playlist" element={<PlaylistMoviesPage />} />
               </Route>
             </Routes>
           </MoviesContextProvider>
