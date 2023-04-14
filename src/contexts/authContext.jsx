@@ -30,6 +30,7 @@ export const AuthContextProvider = ({ children }) => {
       return { error };
     }
     setUser(user);
+    setLoading(false);
     return { user };
   };
 
@@ -39,6 +40,7 @@ export const AuthContextProvider = ({ children }) => {
       return { error };
     }
     setUser(user);
+    setLoading(false);
     return { user };
   };
 

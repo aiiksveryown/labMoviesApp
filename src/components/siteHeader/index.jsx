@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from 'react';
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -11,7 +11,7 @@ import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { supabase } from "../../supabaseClient";
+import { AuthContext } from "../../contexts/authContext";
 
 const styles = {
   title: {
@@ -28,6 +28,7 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const SiteHeader = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+  const { signOut } = useContext(AuthContext);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -49,15 +50,11 @@ const SiteHeader = () => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     navigate("/");
   };
 
-  const userSession = supabase.auth.getUser().then((user) => {
-    return user.data.user;
-  });
-
-  console.log(userSession);
+  const { user } = React.useContext(AuthContext);
 
   return (
     <>
@@ -104,7 +101,7 @@ const SiteHeader = () => {
                     {opt.label}
                   </MenuItem>
                 ))}
-                {userSession ? (
+                {user ? (
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                 ) : (
                   <MenuItem onClick={() => navigate("/signin")}>
@@ -124,7 +121,7 @@ const SiteHeader = () => {
                   {opt.label}
                 </Button>
               ))}
-              {userSession ? (
+              {user ? (
                 <Button color="inherit" onClick={handleSignOut}>
                   Sign Out
                 </Button>

@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/authContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { TextField, Button, Typography, Link, Box, Alert } from '@mui/material';
 
@@ -9,19 +9,19 @@ const SignInPage = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { signIn } = useContext(AuthContext);
-  const navigate = useNavigate();
   const location = useLocation();
-
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(''); // Clear previous error message
+
     const { error } = await signIn({ email, password });
     if (!error) {
       // Check if the previous page was /signin, and if so, navigate to home page
-      console.log(location.state?.from);
       let from = location.state?.from && location.state.from !== '/signin' ? location.state.from : '/';
-      // Navigate to the previous page or home page
-      navigate(from.replace('/', ''), { replace: true });
+      
+      window.location.replace(from);
+
     } else {
       // Display an error message
       setErrorMessage('Invalid email or password');
