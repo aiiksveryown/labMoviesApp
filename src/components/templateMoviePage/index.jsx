@@ -6,12 +6,26 @@ import Box from "@mui/material/Box";
 
 import Spinner from "../spinner";
 import MovieHeader from "../headerMovie";
-import { getMovieImages } from "../../api/tmdb-api";
+import MovieCard from "../movieCard";
+import { getMovieImages, getMovieRecommendations } from "../../api/tmdb-api";
 
 const TemplateMoviePage = ({ movie, children }) => {
-  const { data, error, isLoading, isError } = useQuery(
+  const { data: imagesData, error, isLoading, isError } = useQuery(
     ["images", { id: movie.id }],
     getMovieImages
+  );
+
+  const {
+    data: recommendationsData,
+    isLoading: recommendationsLoading,
+    isError: recommendationsError,
+    error: recommendationsFetchError,
+  } = useQuery(
+    ["recommendations", { id: movie.id }],
+    getMovieRecommendations,
+    {
+      staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+    }
   );
 
   if (isLoading) {
@@ -21,7 +35,8 @@ const TemplateMoviePage = ({ movie, children }) => {
   if (isError) {
     return <h1>{error.message}</h1>;
   }
-  const images = data.posters;
+
+  const images = imagesData.posters;
 
   return (
     <>
@@ -53,6 +68,24 @@ const TemplateMoviePage = ({ movie, children }) => {
           {children}
         </Grid>
       </Grid>
+
+      {recommendationsLoading && <Spinner />}
+      {recommendationsError && <h1>{recommendationsFetchError.message}</h1>}
+      {recommendationsData && (
+        <div>
+          <h2>Recommended Movies:</h2>
+          <Grid container spacing={2}>
+            {recommendationsData.map((recommendedMovie) => (
+              <Grid item key={recommendedMovie.id} xs={6} sm={4} md={3} lg={2}>
+                <MovieCard
+                  action={(movie) => {}}
+                  movie={recommendedMovie}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      )}
     </>
   );
 };

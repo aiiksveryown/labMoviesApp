@@ -85,3 +85,15 @@ export const getGenres = async () => {
     throw error
  });
 };
+
+export const getMovieRecommendations = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await response.json();
+  return data.results; 
+};
