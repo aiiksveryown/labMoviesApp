@@ -65,14 +65,12 @@ const MoviesContextProvider = (props) => {
   };
 
   const addToPlaylist = async (movie) => {
-    console.log("addToPlaylistI", movie.id);
     if (playlist.find((movie_id) => movie_id === movie.id)) {
       return;
     }
 
     try {
       const request = await addMovieToPlaylist(userId, movie.id);
-      console.log("addToPlaylistR", request);
       refetchPlaylist();
     } catch (error) {
       if (error.response) {
