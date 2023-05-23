@@ -36,9 +36,9 @@ const PlaylistMoviesPage = () => {
 
   // Create an array of queries and run them in parallel.
   const playlistMovieQueries = useQueries(
-    playlist.map((m) => {
+    playlist.map((movie_id) => {
       return {
-        queryKey: ["movie", { id: m.movie_id }],
+        queryKey: ["movie", { id: movie_id }],
         queryFn: getMovie,
       };
     })

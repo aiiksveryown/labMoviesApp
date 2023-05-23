@@ -1,16 +1,8 @@
 import React, { useState, createContext, useContext } from "react";
 import { useQuery } from "react-query";
 import { AuthContext } from "./authContext";
-import {
-  fetchFavourites,
-  addToFavouriteMovies,
-  removeFromFavouriteMovies,
-  fetchPlaylist,
-  addToMoviePlaylist,
-  removeFromMoviePlaylist,
-} from "../db/supabase";
 
-import { getFavourites, addFavourite, removeFavourite } from "../api/user-data";
+import { getFavourites, addFavourite, removeFavourite, getUserPlaylist, addMovieToPlaylist, removeMovieFromPlaylist } from "../api/user-data";
 
 export const MoviesContext = createContext(null);
 
@@ -22,7 +14,7 @@ function useFavourites(userId) {
 }
 
 function usePlaylist(userId) {
-  return useQuery(["playlist", userId], () => fetchPlaylist(userId), {
+  return useQuery(["playlist", userId], () => getUserPlaylist(userId), {
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });
@@ -73,22 +65,34 @@ const MoviesContextProvider = (props) => {
   };
 
   const addToPlaylist = async (movie) => {
-    if (playlist.find((m) => m.movie_id === movie.id)) {
+    console.log("addToPlaylistI", movie.id);
+    if (playlist.find((movie_id) => movie_id === movie.id)) {
       return;
     }
 
-    const error = await addToMoviePlaylist(userId, movie.id);
-
-    if (!error) {
+    try {
+      const request = await addMovieToPlaylist(userId, movie.id);
+      console.log("addToPlaylistR", request);
       refetchPlaylist();
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else {
+        console.log(error);
+      }      
     }
   };
 
   const removeFromPlaylist = async (movie) => {
-    const error = await removeFromMoviePlaylist(userId, movie.id);
-
-    if (!error) {
+    try {
+      const request = await removeMovieFromPlaylist(userId, movie.id);
       refetchPlaylist();
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else {
+        console.log(error);
+      }
     }
   };
 
