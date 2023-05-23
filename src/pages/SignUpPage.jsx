@@ -18,7 +18,6 @@ const SignUpPage = () => {
     setError(null); // Clear previous error message
     try {
       const { user } = await register(email, password, firstName, lastName);
-      console.log("resp", user);
       // If user registration is successful, navigate to the desired route
       navigate('/'); // Change this to the desired route
     } catch (error) {

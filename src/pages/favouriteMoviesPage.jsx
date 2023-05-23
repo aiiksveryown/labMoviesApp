@@ -35,9 +35,9 @@ const FavouriteMoviesPage = () => {
 
   // Create an array of queries and run them in parallel.
   const favouriteMovieQueries = useQueries(
-    favourites.map((f) => {
+    favourites.map((movie_id) => {
       return {
-        queryKey: ["movie", { id: f.movie_id }],
+        queryKey: ["movie", { id: movie_id }],
         queryFn: getMovie,
       };
     })

@@ -54,8 +54,6 @@ const SiteHeader = () => {
     navigate("/");
   };
 
-  console.log("isAuthenticated", isAuthenticated);
-
   return (
     <>
       <AppBar sx={styles.appbar} position="fixed" elevation={0} color="primary">

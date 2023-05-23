@@ -22,7 +22,6 @@ const SignInPage = () => {
       let from = location.state?.from && location.state.from !== '/signin' ? location.state.from : '/';
       
       window.location.replace(from);
-      console.log("from", from);
       
     } catch (error) {
       // Display an error message

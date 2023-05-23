@@ -28,9 +28,9 @@ const styles = {
 export default function MovieCard({ movie, action }) {
   const { favourites, playlist } = useContext(MoviesContext);
 
-  const isFavourite = favourites.find((m) => m.movie_id === movie.id);
+  const isFavourite = favourites.find((movie_id) => movie_id === movie.id);
 
-  const isInPlaylist = playlist.find((m) => m.movie_id === movie.id);
+  const isInPlaylist = playlist.find((movie_id) => movie_id === movie.id);
 
   return (
     <Card sx={styles.card}>

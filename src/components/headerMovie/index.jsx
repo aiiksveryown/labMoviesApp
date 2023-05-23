@@ -24,7 +24,7 @@ const MovieHeader = (props) => {
   const { favourites } = useContext(MoviesContext);
 
   const isMovieFavourite = (movie) => {
-    const isFav = favourites.find((m) => m.movie_id === movie.id);
+    const isFav = favourites.find((movie_id) => movie_id === movie.id);
     if (isFav !== undefined) {
       return true;
     }

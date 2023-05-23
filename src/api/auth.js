@@ -17,3 +17,13 @@ export const login = (email, password) => {
       body: JSON.stringify({ email: email, password: password })
   }).then(res => res.json())
 };
+
+export const getAccount = (token, email) => {
+  return fetch(`/api/accounts/`, {
+      headers: {
+          'Authorization': token
+    },
+    body: JSON.stringify({ email: email }),
+    method: 'post'
+  }).then(res => res.json())
+};

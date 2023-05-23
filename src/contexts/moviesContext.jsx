@@ -10,10 +10,12 @@ import {
   removeFromMoviePlaylist,
 } from "../db/supabase";
 
+import { getFavourites, addFavourite, removeFavourite } from "../api/user-data";
+
 export const MoviesContext = createContext(null);
 
 function useFavourites(userId) {
-  return useQuery(["favourites", userId], () => fetchFavourites(userId), {
+  return useQuery(["favourites", userId], () => getFavourites(userId), {
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });
@@ -28,30 +30,41 @@ function usePlaylist(userId) {
 
 const MoviesContextProvider = (props) => {
   const [myReviews, setMyReviews] = useState({});
-  const { user } = useContext(AuthContext);
+  const { userId, email } = useContext(AuthContext);
 
   const { data: favourites, refetch: refetchFavourites } = useFavourites(
-    user?.id
+    userId
   );
-  const { data: playlist, refetch: refetchPlaylist } = usePlaylist(user?.id);
+
+  const { data: playlist, refetch: refetchPlaylist } = usePlaylist(userId);
 
   const addToFavourites = async (movie) => {
-    if (favourites.find((m) => m.movie_id === movie.id)) {
+    if (favourites.find((movie_id) => movie_id === movie.id)) {
       return;
     }
 
-    const error = await addToFavouriteMovies(user?.id, movie.id);
-
-    if (!error) {
+    try {
+      const request = await addFavourite(userId, movie.id);
       refetchFavourites();
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else {
+        console.log(error);
+      }
     }
   };
 
   const removeFromFavourites = async (movie) => {
-    const error = await removeFromFavouriteMovies(user?.id, movie.id);
-
-    if (!error) {
+    try {
+      const request = await removeFavourite(userId, movie.id);
       refetchFavourites();
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else {
+        console.log(error);
+      }      
     }
   };
 
@@ -64,7 +77,7 @@ const MoviesContextProvider = (props) => {
       return;
     }
 
-    const error = await addToMoviePlaylist(user?.id, movie.id);
+    const error = await addToMoviePlaylist(userId, movie.id);
 
     if (!error) {
       refetchPlaylist();
@@ -72,7 +85,7 @@ const MoviesContextProvider = (props) => {
   };
 
   const removeFromPlaylist = async (movie) => {
-    const error = await removeFromMoviePlaylist(user?.id, movie.id);
+    const error = await removeFromMoviePlaylist(userId, movie.id);
 
     if (!error) {
       refetchPlaylist();
