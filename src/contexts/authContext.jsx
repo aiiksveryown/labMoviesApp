@@ -1,62 +1,62 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { supabase } from '../supabaseClient';
+import { login, signup } from "../api/auth";
 
 export const AuthContext = createContext();
 
-export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+export const AuthContextProvider = (props) => {
+  const existingToken = localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(existingToken));
+  const [authToken, setAuthToken] = useState(existingToken);
+  const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    const session = supabase.auth.getUser();
-    setUser(session);
-    setLoading(false);
+  const setToken = (data) => {
+    localStorage.setItem("token", data);
+    setAuthToken(data);
+  }
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user);
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      authListener.subscription?.unsubscribe();
-    };
-  }, []);
-
-  const signUp = async ({ email, password }) => {
-    const { user, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      return { error };
+  const authenticate = async (email, password) => {
+    const result = await login(email, password);
+    if (result.token) {
+      setToken(result.token);
+      setIsAuthenticated(true);
+      setEmail(email);
+    } else {
+      throw new Error(result.message);
     }
-    setUser(user);
-    setLoading(false);
-    return { user };
   };
 
-  const signIn = async ({ email, password }) => {
-    const { user, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      return { error };
+  const register = async (email, password, firstName, lastName) => {
+    const result = await signup(email, password, firstName,lastName);
+    if (result.code === 201) {
+      await authenticate(email, password);
+    } else {
+      throw new Error(result.error);
     }
-    setUser(user);
-    setLoading(false);
-    return { user };
   };
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      return { error };
-    }
-    setUser(null);
-  };
+  const signout = () => {
+    setTimeout(() => {
+      setAuthToken(null);
+      setIsAuthenticated(false);
+      setEmail("");
+      localStorage.clear();
+    }, 100);
+  }
 
   return (
     <AuthContext.Provider
-      value={{ user, signUp, signIn, signOut, loading }}
+      value={{
+        isAuthenticated,
+        authenticate,
+        register,
+        signout,
+        authToken,
+        email
+      }}
     >
-      {children}
+      {props.children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthContextProvider;

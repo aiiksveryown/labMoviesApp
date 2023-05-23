@@ -1,19 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 import Spinner from './spinner'
 
 const ProtectedRoutes = () => {
-  const { user, loading } = useContext(AuthContext); // Add loading here
+  const { isAuthenticated, loading, authenticate } = useContext(AuthContext);
   const location = useLocation();
 
-  // If the authentication status is still being determined, show a loading message or spinner
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        if (!isAuthenticated && !loading) {
+          await authenticate();
+        }
+      } catch (error) {
+        console.error("Authentication error", error);
+        // handle error here, maybe navigate to a specific error page or show a notification
+      }
+    };
+    initializeAuth();
+  }, [isAuthenticated, loading, authenticate]);
+
   if (loading) {
     return <Spinner />;
   }
 
-  // If the user is authenticated, show the protected content
-  return user ? (
+  return isAuthenticated ? (
     <Outlet />
   ) : (
     <Navigate to="/signin" state={{ from: location.pathname }} replace />

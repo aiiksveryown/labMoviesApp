@@ -4,21 +4,26 @@ import { TextField, Button, Typography, Link, Box, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp } = useContext(AuthContext); // Access the signUp function from AuthContext
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [registered, setRegistered] = useState(false);
+  const [error, setError] = useState(null);
+  const { register, isAuthenticated } = useContext(AuthContext); // Access the signUp function from AuthContext
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const { user, error } = await signUp({ email, password, username });
-    if (user) {
-      // Navigate to a protected route or home page after successful sign-up
+    setError(null); // Clear previous error message
+    try {
+      const { user } = await register(email, password, firstName, lastName);
+      console.log("resp", user);
+      // If user registration is successful, navigate to the desired route
       navigate('/'); // Change this to the desired route
-    } else {
-      // Display an error message based on the error from signUp
-      console.error('Error during sign-up:', error.message);
+    } catch (error) {
+      // Display an error message
+      setError('Registration failed, please check your inputs and try again.');
     }
   };
 
@@ -29,10 +34,18 @@ const SignUpPage = () => {
         <TextField
           fullWidth
           margin="normal"
-          label="User Name"
+          label="First Name"
           variant="outlined"
-          value={username.toLowerCase().trim()}
-          onChange={(e) => setUsername(e.target.value)}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Last Name"
+          variant="outlined"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
         />
         <TextField
           fullWidth
@@ -55,6 +68,11 @@ const SignUpPage = () => {
         <Typography variant="caption" color="text.secondary">
           Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
         </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary">
             Submit

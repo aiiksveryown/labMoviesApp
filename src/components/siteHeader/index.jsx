@@ -28,7 +28,7 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const SiteHeader = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const { signOut } = useContext(AuthContext);
+  const { signout, isAuthenticated } = useContext(AuthContext);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -50,11 +50,11 @@ const SiteHeader = () => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    await signout();
     navigate("/");
   };
 
-  const { user } = React.useContext(AuthContext);
+  console.log("isAuthenticated", isAuthenticated);
 
   return (
     <>
@@ -121,7 +121,7 @@ const SiteHeader = () => {
                   {opt.label}
                 </Button>
               ))}
-              {user ? (
+              {isAuthenticated ? (
                 <Button color="inherit" onClick={handleSignOut}>
                   Sign Out
                 </Button>

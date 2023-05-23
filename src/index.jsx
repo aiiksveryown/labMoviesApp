@@ -36,14 +36,14 @@ const App = () => {
           <SiteHeader />
           <MoviesContextProvider>
             <Routes>
-              <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-              <Route path="/movies/:id" element={<MoviePage />} />
-              <Route path="/reviews/:id" element={<MovieReviewPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="*" element={<Navigate to="/" />} />
               <Route path="/signin" element={<SignInPage />} />
               <Route path="/signup" element={<SignUpPage />} />
+              {/* <Route path="/" element={<HomePage />} /> */}
               <Route path="/*" element={<ProtectedRoutes />}>
+                <Route path="*" element={<HomePage /> } />
+                <Route path="movies/:id" element={<MoviePage />} />
+                <Route path="reviews/:id" element={<MovieReviewPage />} />
+                <Route path="movies/upcoming" element={<UpcomingMoviesPage /> } />
                 <Route path="reviews/form" element={<AddMovieReviewPage/>} />
                 <Route path="movies/favourites" element={<FavouriteMoviesPage />} />
                 <Route path="movies/playlist" element={<PlaylistMoviesPage />} />

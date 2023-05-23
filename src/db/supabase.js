@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient"; // Import your Supabase client
+import { supabase } from "../supabaseClient"; 
 
 export async function fetchFavourites(userId) {
   const { data, error } = await supabase
@@ -31,7 +31,6 @@ export async function removeFromFavouriteMovies(userId, movieId) {
   return error;
 }
 
-// Add similar functions for playlists
 export async function fetchPlaylist(userId) {
   const { data, error } = await supabase
     .from("playlists")

@@ -8,21 +8,23 @@ const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const { signIn } = useContext(AuthContext);
+  const { authenticate } = useContext(AuthContext);
   const location = useLocation();
   
   const onSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(''); // Clear previous error message
-
-    const { error } = await signIn({ email, password });
-    if (!error) {
+  
+    try {
+      await authenticate(email, password);
+      
       // Check if the previous page was /signin, and if so, navigate to home page
       let from = location.state?.from && location.state.from !== '/signin' ? location.state.from : '/';
       
       window.location.replace(from);
-
-    } else {
+      console.log("from", from);
+      
+    } catch (error) {
       // Display an error message
       setErrorMessage('Invalid email or password');
     }
