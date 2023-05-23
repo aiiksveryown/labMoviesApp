@@ -92,22 +92,6 @@ export default function FilterMoviesCard(props) {
               );
             })}
           </Select>
-          
-          {/* <InputLabel id="country-label">Country</InputLabel>
-          <Select
-            labelId="country-label"
-            id="country-select"
-            value={props.countryFilter}
-            onChange={handleCountryChange}
-          >
-            {countries.map((country) => {
-              return (
-                <MenuItem key={country.id} value={country.id}>
-                  {country.name}
-                </MenuItem>
-              );
-            })}
-          </Select> */}
         </FormControl>
       </CardContent>
     </Card>
