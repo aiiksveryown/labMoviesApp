@@ -7,8 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'https://europe-west1-aiiksveryown.cloudfunctions.net/movies-api/',
-        target: 'http://localhost:8080',
+        target: import.meta.env.VITE_API_URL,
         pathRewrite: { '^/api': '' },
         changeOrigin: true,
       },
